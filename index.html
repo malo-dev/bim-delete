@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suppression de compte — BIM Next</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #F0F4FF;
+      color: #0D1B3E;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #302E99 0%, #0353CC 100%);
+      padding: 32px 24px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      top: -100px; right: -80px;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      bottom: -60px; left: -40px;
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .logo-text {
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .logo-text span { color: #93C5FD; }
+
+    header h1 {
+      color: rgba(255,255,255,0.90);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 720px;
+      margin: -24px auto 48px;
+      padding: 0 16px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(3,83,204,0.08);
+      box-shadow: 0 4px 24px rgba(3,83,204,0.07);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-icon.red    { background: rgba(239,68,68,0.10); }
+    .card-icon.blue   { background: rgba(3,83,204,0.10); }
+    .card-icon.amber  { background: rgba(245,158,11,0.10); }
+    .card-icon.green  { background: rgba(16,185,129,0.10); }
+
+    .card-title h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0D1B3E;
+    }
+    .card-title p {
+      font-size: 13px;
+      color: #7B8DB0;
+      margin-top: 2px;
+    }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 16px; }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #302E99, #0353CC);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body strong {
+      display: block;
+      font-size: 15px;
+      color: #0D1B3E;
+      margin-bottom: 4px;
+    }
+    .step-body p {
+      font-size: 14px;
+      color: #7B8DB0;
+      line-height: 1.6;
+    }
+    .step-path {
+      font-size: 13px;
+      background: #EEF2FF;
+      border: 1px solid rgba(3,83,204,0.12);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      color: #0353CC;
+      font-family: monospace;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── TABLE DONNÉES ── */
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .data-table th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7B8DB0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 12px 10px;
+    }
+    .data-table td {
+      font-size: 14px;
+      color: #0D1B3E;
+      padding: 12px;
+      border-top: 1px solid rgba(3,83,204,0.07);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tr:first-child td { border-top: none; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.deleted  { background: rgba(239,68,68,0.10);  color: #DC2626; }
+    .badge.kept     { background: rgba(245,158,11,0.10); color: #D97706; }
+    .badge.anon     { background: rgba(16,185,129,0.10); color: #059669; }
+
+    /* ── ALERT ── */
+    .alert {
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .alert.warning {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.20);
+    }
+    .alert.info {
+      background: rgba(3,83,204,0.06);
+      border: 1px solid rgba(3,83,204,0.15);
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-text { font-size: 14px; color: #0D1B3E; line-height: 1.6; }
+    .alert-text strong { font-weight: 600; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    @media (max-width: 500px) { .contact-grid { grid-template-columns: 1fr; } }
+
+    .contact-item {
+      background: #F0F4FF;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(3,83,204,0.08);
+    }
+    .contact-item .label {
+      font-size: 12px;
+      color: #7B8DB0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+    .contact-item .value {
+      font-size: 14px;
+      color: #0353CC;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: #7B8DB0;
+    }
+    footer a { color: #0353CC; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-icon">🌐</div>
+      <div class="logo-text">BIM <span>Next</span></div>
+    </div>
+    <h1>Suppression de compte et des données</h1>
+  </header>
+
+  <div class="container">
+
+    <!-- ALERTE INFO -->
+    <div class="alert info" style="margin-top: 32px;">
+      <div class="alert-icon">ℹ️</div>
+      <div class="alert-text">
+        <strong>Suppression directement dans l'application.</strong>
+        Vous pouvez supprimer votre compte BIM Next à tout moment depuis les paramètres de l'application, sans avoir à nous contacter. La procédure est immédiate et irréversible.
+      </div>
+    </div>
+
+    <!-- ÉTAPES DANS L'APP -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon red">🗑️</div>
+        <div>
+          <h2>Supprimer mon compte dans l'application</h2>
+          <p>Procédure rapide — environ 1 minute</p>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Ouvrez BIM Next</strong>
+            <p>Connectez-vous à votre compte si ce n'est pas déjà fait.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Allez dans les Paramètres</strong>
+            <p>Appuyez sur l'icône <strong>Paramètres</strong> depuis l'écran principal.</p>
+            <div class="step-path">Accueil → Paramètres</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Faites défiler jusqu'en bas</strong>
+            <p>Tout en bas de la page Paramètres, vous trouverez le bouton <strong style="color:#DC2626;">"Supprimer mon compte"</strong>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Lisez attentivement l'avertissement</strong>
+            <p>Un message de confirmation s'affiche pour vous rappeler que <strong>toutes vos données seront définitivement supprimées</strong>. Lisez-le attentivement avant de continuer.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <strong>Confirmez la suppression</strong>
+            <p>Confirmez votre choix. La suppression est <strong>immédiate et irréversible</strong>. Il n'est pas possible de récupérer votre compte après cette action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVERTISSEMENT FORT -->
+    <div style="
+      background: rgba(239,68,68,0.08);
+      border: 1.5px solid rgba(239,68,68,0.35);
+      border-left: 5px solid #DC2626;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    ">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="font-size:22px; flex-shrink:0;">🚨</div>
+        <div>
+          <div style="font-size:16px; font-weight:700; color:#DC2626; margin-bottom:10px;">
+            Attention — Action irréversible
+          </div>
+          <p style="font-size:14px; color:#0D1B3E; line-height:1.7; margin-bottom:10px;">
+            La suppression de votre compte BIM Next est <strong>définitive et irréversible</strong>. Une fois confirmée, <strong>tout ce qui est rattaché à votre compte sera immédiatement supprimé</strong>, notamment :
+          </p>
+          <ul style="font-size:14px; color:#0D1B3E; line-height:1.9; padding-left:20px; margin-bottom:10px;">
+            <li>Votre profil et toutes vos informations personnelles</li>
+            <li>Votre solde et votre portefeuille BIM Next</li>
+            <li>Vos produits, commandes et abonnements en cours</li>
+            <li>Vos accès aux offres et réductions du réseau</li>
+            <li>Vos contacts et connexions dans le réseau</li>
+            <li>Tout l'historique de votre activité dans l'application</li>
+          </ul>
+          <p style="font-size:14px; color:#DC2626; font-weight:600; line-height:1.6;">
+            ⛔ Il est impossible de récupérer votre compte ou vos données après suppression. Assurez-vous d'avoir un solde nul et d'avoir finalisé toutes vos transactions en cours avant de procéder.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DONNÉES SUPPRIMÉES / CONSERVÉES -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon blue">📋</div>
+        <div>
+          <h2>Données supprimées et conservées</h2>
+          <p>Détail de ce qui est effacé ou conservé après la suppression</p>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type de données</th>
+            <th>Action</th>
+            <th>Délai</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nom, prénom, e-mail, téléphone</td>
+            <td><span class="badge deleted">Supprimé</span></td>
+            <td>Immédiat</td>
+          </tr>
+          <tr>
+            <td>Photo de profil et préférences</td>
+            <td><span class="badge deleted">Supprimé</span></td>
+            <td>Immédiat</td>
+          </tr>
+          <tr>
+            <td>Mot de passe (chiffré)</td>
+            <td><span class="badge deleted">Supprimé</span></td>
+            <td>Immédiat</td>
+          </tr>
+          <tr>
+            <td>Solde et portefeuille</td>
+            <td><span class="badge deleted">Supprimé</span></td>
+            <td>Immédiat</td>
+          </tr>
+          <tr>
+            <td>Données de connexion et logs</td>
+            <td><span class="badge deleted">Supprimé</span></td>
+            <td>30 jours</td>
+          </tr>
+          <tr>
+            <td>Historique des transactions financières</td>
+            <td><span class="badge kept">Conservé</span></td>
+            <td>10 ans (obligation légale comptable)</td>
+          </tr>
+          <tr>
+            <td>Données de facturation</td>
+            <td><span class="badge kept">Conservé</span></td>
+            <td>10 ans (obligation fiscale)</td>
+          </tr>
+          <tr>
+            <td>Données analytiques agrégées</td>
+            <td><span class="badge anon">Anonymisé</span></td>
+            <td>Aucun lien avec votre identité</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon green">✉️</div>
+        <div>
+          <h2>Vous ne pouvez pas accéder à l'application ?</h2>
+          <p>Contactez-nous directement pour demander la suppression</p>
+        </div>
+      </div>
+
+      <p style="font-size:14px; color:#7B8DB0; margin-bottom:16px; line-height:1.6;">
+        Si vous ne pouvez plus accéder à votre compte BIM Next, envoyez-nous un e-mail depuis l'adresse associée à votre compte en indiquant votre numéro de téléphone enregistré. Nous traiterons votre demande dans un délai de <strong style="color:#0D1B3E;">7 jours ouvrés</strong>.
+      </p>
+
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="label">E-mail support</div>
+          <div class="value">support@bimreseau.com</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Objet de l'e-mail</div>
+          <div class="value">Demande suppression compte BIM Next</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; 2025 BIM Next — <a href="mailto:support@bimreseau.com">support@bimreseau.com</a>
+    &nbsp;·&nbsp; <a href="#">Politique de confidentialité</a>
+  </footer>
+
+</body>
+</html>
